@@ -1,0 +1,48 @@
+using UnityEngine;
+using System.Collections;
+
+public class ToupieFactory : MonoBehaviour
+{
+  public GameObject toupieModel;	// prefab
+
+  void Update ()
+  {
+    // go through toupies hash, update objects
+    foreach (DictionaryEntry t in toupies)
+    {
+      int toupie = t.Value;
+      
+      switch (toupie.state)
+      {
+      case TuioToupie.State.New:
+	// create game object
+	toupie.gameobj = PrefabUtility.InstantiatePrefab(toupieModel);
+	toupie.state = TuioToupie.State.Update;
+
+      /*FALLTHROUGH!*/
+	
+      case TuioToupie.State.Update:
+	Vector3 pos = toupie.gameobj.transform.position;
+	pos.x = position.x;
+	pos.z = position.y;
+	toupie.gameobj.transform.position = pos;
+      break;
+
+      case TuioToupie.State.Remove:
+	// kill gameobject
+	toupie.gameobj.Destroy();
+
+	// remove from hash
+	toupies.Remove(t.Key);
+      break;
+      }
+    }
+  }
+}
+
+/** EMACS **
+ * Local variables:
+ * mode: c-sharp
+ * c-basic-offset:2
+ * End:
+ */
